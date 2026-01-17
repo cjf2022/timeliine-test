@@ -93,6 +93,113 @@
             }
             canvas.appendChild(decadeDiv);
         }
-    </script>
+        <style>
+          .timeline-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: sans-serif;
+          }
+          .timeline-item {
+            padding: 20px 0;
+            border-left: 2px solid #e0e0e0; /* The vertical line */
+            position: relative;
+            padding-left: 30px;
+          }
+          .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 24px;
+            width: 10px;
+            height: 10px;
+            background: #007bff; /* Blue dot */
+            border-radius: 50%;
+          }
+          .timeline-year {
+            font-weight: bold;
+            color: #007bff;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+          }
+          .timeline-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 0 0 5px 0;
+          }
+          .timeline-desc {
+            color: #555;
+            margin: 0;
+            line-height: 1.5;
+          }
+        </style>
+
+        <div id="timeline-container" class="timeline-container">
+          </div>
+
+        <script>
+          // This is your JSON data
+          const timelineData = [
+            {
+              "year": "1991",
+              "title": "Origins",
+              "description": "Born in Iowa."
+            },
+            {
+              "year": "2009",
+              "title": "Foundations",
+              "description": "Interned at Horizons Credit Counseling and became a Master Mason (Marion #6)."
+            },
+            {
+              "year": "2010",
+              "title": "Career Start",
+              "description": "Graduated High School and hired for first IT role at Security Coverage."
+            },
+            {
+              "year": "2013",
+              "title": "Higher Education",
+              "description": "Graduated from Kirkwood Community College with an Associate's Degree."
+            },
+            {
+              "year": "2014",
+              "title": "ImOn Communications",
+              "description": "Transitioned to telecom network operations and support."
+            },
+            {
+              "year": "2018",
+              "title": "Real Estate Investment",
+              "description": "Purchased first multi-unit property (Duplex) in Hiawatha, IA."
+            },
+            {
+              "year": "2021",
+              "title": "Content Creation",
+              "description": "Launched 'Diecastinator' YouTube channel."
+            },
+            {
+              "year": "2022",
+              "title": "Wix & Entrepreneurship",
+              "description": "Joined Wix.com as an eCommerce specialist and filed LLC for 'Technically Easier'."
+            }
+          ];
+
+          // This function builds the HTML
+          const container = document.getElementById('timeline-container');
+          
+          timelineData.forEach(item => {
+            // Create the outer div
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'timeline-item';
+            
+            // Create the HTML content
+            itemDiv.innerHTML = `
+              <div class="timeline-year">${item.year}</div>
+              <h3 class="timeline-title">${item.title}</h3>
+              <p class="timeline-desc">${item.description}</p>
+            `;
+            
+            // Add it to the page
+            container.appendChild(itemDiv);
+          });
+        </script>    </script>
 </body>
 </html>
