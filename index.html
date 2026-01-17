@@ -4,85 +4,95 @@
     <meta charset="UTF-8">
     <title>CJ's Life Timeline</title>
     <style>
-        body { font-family: 'Helvetica', sans-serif; background-color: #f4f4f4; padding: 20px; text-align: center; color: #333; }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(52, 1fr);
-            gap: 2px;
-            max-width: 800px;
-            margin: 20px auto;
-        }
-        .week {
-            width: 10px;
-            height: 10px;
-            border: 1px solid #ddd;
-            background-color: white;
-            position: relative;
-        }
-        .lived {
-            background-color: #4CAF50;
-            border-color: #388E3C;
-        }
-        /* The hover tooltip */
+        body { font-family: 'Helvetica', sans-serif; background-color: #fff; padding: 40px; color: #333; line-height: 1.6; }
+        .decade-section { margin-bottom: 40px; text-align: left; max-width: 900px; margin-left: auto; margin-right: auto; }
+        .decade-title { font-size: 1.2em; font-weight: bold; color: #888; border-bottom: 1px solid #eee; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .year-row { display: flex; align-items: center; margin-bottom: 4px; }
+        .year-label { width: 80px; font-size: 12px; color: #aaa; text-align: right; margin-right: 15px; }
+        
+        .weeks-container { display: flex; gap: 2px; }
+        .week { width: 12px; height: 12px; border: 1px solid #e0e0e0; background-color: #f9f9f9; position: relative; }
+        .lived { background-color: #4CAF50; border-color: #388E3C; }
+        
+        /* Event markers - Buster uses different colors for big events */
+        .event-work { background-color: #2196F3; border-color: #1976D2; } /* Blue for business/work */
+        .event-civic { background-color: #9C27B0; border-color: #7B1FA2; } /* Purple for City Council */
+
         .week:hover::after {
             content: attr(data-info);
-            position: absolute;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #333;
-            color: #fff;
-            padding: 5px;
-            border-radius: 4px;
-            font-size: 10px;
-            white-space: nowrap;
-            z-index: 10;
+            position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%);
+            background: #333; color: #fff; padding: 5px 10px; border-radius: 4px;
+            font-size: 11px; white-space: nowrap; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        .stats { margin-top: 30px; padding: 20px; background: white; border-radius: 8px; max-width: 400px; margin-left: auto; margin-right: auto; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
-    <h1>CJ's Life in Weeks</h1>
-    <p>Born: April 30, 1991</p>
-    
-    <div class="grid" id="timeline-grid"></div>
 
-    <div class="stats" id="stats-panel">
-        <h3>Life Progress</h3>
-        <p id="weeks-counter"></p>
-        <p id="remaining-counter"></p>
-    </div>
+    <h1>Life in Weeks</h1>
+    <p style="color: #666; margin-bottom: 40px;">Inspired by Buster Benson and Tim Urban</p>
+
+    <div id="timeline-canvas"></div>
 
     <script>
-        const birthday = new Date('1991-04-30');
+        const birthDate = new Date('1991-04-30');
         const today = new Date();
-        const totalYears = 100;
-        const totalWeeks = totalYears * 52;
-        
-        const diffInMs = today - birthday;
-        const weeksLived = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 7));
+        const canvas = document.getElementById('timeline-canvas');
 
-        const grid = document.getElementById('timeline-grid');
+        // Define your major life events here later!
+        const events = {
+            // Example format: 'YYYY-MM-DD': { class: 'event-civic', note: 'Sworn into Council' }
+            '2025-11-19': { class: 'event-civic', note: 'Sworn into Hiawatha City Council' },
+            '2026-03-02': { class: 'event-work', note: 'Full-time at Technically Easier' }
+        };
 
-        for (let i = 0; i < totalWeeks; i++) {
-            const weekDiv = document.createElement('div');
-            weekDiv.className = 'week';
+        for (let decade = 0; decade < 10; decade++) {
+            const decadeDiv = document.createElement('div');
+            decadeDiv.className = 'decade-section';
             
-            // Calculate year and age for this specific dot
-            const yearNum = 1991 + Math.floor(i / 52);
-            const ageAtWeek = Math.floor(i / 52);
-            weekDiv.setAttribute('data-info', `Year: ${yearNum} | Age: ${ageAtWeek}`);
+            const startAge = decade * 10;
+            decadeDiv.innerHTML = `<div class="decade-title">Ages ${startAge} - ${startAge + 9}</div>`;
+            
+            for (let y = 0; y < 10; y++) {
+                const currentAge = startAge + y;
+                const currentYear = 1991 + currentAge;
+                
+                const row = document.createElement('div');
+                row.className = 'year-row';
+                row.innerHTML = `<div class="year-label">${currentAge} in ${currentYear}</div>`;
+                
+                const weeksDiv = document.createElement('div');
+                weeksDiv.className = 'weeks-container';
+                
+                for (let w = 0; w < 52; w++) {
+                    const weekDiv = document.createElement('div');
+                    weekDiv.className = 'week';
+                    
+                    // Logic to see if this week has passed
+                    const weekDate = new Date(1991, 3, 30); // Start at birthday
+                    weekDate.setDate(weekDate.getDate() + (currentAge * 365) + (w * 7));
+                    
+                    if (weekDate < today) {
+                        weekDiv.classList.add('lived');
+                    }
 
-            if (i < weeksLived) {
-                weekDiv.classList.add('lived');
+                    // Check for events
+                    const dateString = weekDate.toISOString().split('T')[0];
+                    if (events[dateString]) {
+                        weekDiv.classList.add(events[dateString].class);
+                        weekDiv.setAttribute('data-info', events[dateString].note);
+                    } else {
+                        weekDiv.setAttribute('data-info', `Age ${currentAge}, Week ${w + 1} (${currentYear})`);
+                    }
+                    
+                    weeksDiv.appendChild(weekDiv);
+                }
+                
+                row.appendChild(weeksDiv);
+                decadeDiv.appendChild(row);
             }
-            
-            grid.appendChild(weekDiv);
+            canvas.appendChild(decadeDiv);
         }
-
-        // Update Stats
-        document.getElementById('weeks-counter').innerText = `Weeks Lived: ${weeksLived.toLocaleString()}`;
-        document.getElementById('remaining-counter').innerText = `Weeks Remaining: ${(totalWeeks - weeksLived).toLocaleString()}`;
     </script>
 </body>
 </html>
