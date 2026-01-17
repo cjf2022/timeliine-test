@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>CJ's Life Timeline</title>
     <style>
-        body { font-family: 'Helvetica', sans-serif; background-color: #f4f4f4; padding: 20px; text-align: center; }
+        body { font-family: 'Helvetica', sans-serif; background-color: #f4f4f4; padding: 20px; text-align: center; color: #333; }
         .grid {
             display: grid;
             grid-template-columns: repeat(52, 1fr);
@@ -17,19 +17,41 @@
             height: 10px;
             border: 1px solid #ddd;
             background-color: white;
+            position: relative;
         }
         .lived {
             background-color: #4CAF50;
             border-color: #388E3C;
         }
-        h2 { color: #333; }
+        /* The hover tooltip */
+        .week:hover::after {
+            content: attr(data-info);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: #fff;
+            padding: 5px;
+            border-radius: 4px;
+            font-size: 10px;
+            white-space: nowrap;
+            z-index: 10;
+        }
+        .stats { margin-top: 30px; padding: 20px; background: white; border-radius: 8px; max-width: 400px; margin-left: auto; margin-right: auto; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
     <h1>CJ's Life in Weeks</h1>
-    <p>Target: 100 Years</p>
+    <p>Born: April 30, 1991</p>
     
     <div class="grid" id="timeline-grid"></div>
+
+    <div class="stats" id="stats-panel">
+        <h3>Life Progress</h3>
+        <p id="weeks-counter"></p>
+        <p id="remaining-counter"></p>
+    </div>
 
     <script>
         const birthday = new Date('1991-04-30');
@@ -37,7 +59,6 @@
         const totalYears = 100;
         const totalWeeks = totalYears * 52;
         
-        // Calculate weeks lived
         const diffInMs = today - birthday;
         const weeksLived = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 7));
 
@@ -47,13 +68,21 @@
             const weekDiv = document.createElement('div');
             weekDiv.className = 'week';
             
-            // If the current box is less than weeks lived, color it green
+            // Calculate year and age for this specific dot
+            const yearNum = 1991 + Math.floor(i / 52);
+            const ageAtWeek = Math.floor(i / 52);
+            weekDiv.setAttribute('data-info', `Year: ${yearNum} | Age: ${ageAtWeek}`);
+
             if (i < weeksLived) {
                 weekDiv.classList.add('lived');
             }
             
             grid.appendChild(weekDiv);
         }
+
+        // Update Stats
+        document.getElementById('weeks-counter').innerText = `Weeks Lived: ${weeksLived.toLocaleString()}`;
+        document.getElementById('remaining-counter').innerText = `Weeks Remaining: ${(totalWeeks - weeksLived).toLocaleString()}`;
     </script>
 </body>
 </html>
