@@ -5,15 +5,55 @@
     <title>CJ's Life Timeline</title>
     <style>
         body { font-family: 'Helvetica', sans-serif; background-color: #f4f4f4; padding: 20px; text-align: center; }
-        .grid { display: grid; grid-template-columns: repeat(52, 1fr); gap: 2px; max-width: 800px; margin: 0 auto; }
-        .week { width: 10px; height: 10px; border: 1px solid #ddd; background-color: white; }
-        .lived { background-color: #4CAF50; border-color: #388E3C; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(52, 1fr);
+            gap: 2px;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+        .week {
+            width: 10px;
+            height: 10px;
+            border: 1px solid #ddd;
+            background-color: white;
+        }
+        .lived {
+            background-color: #4CAF50;
+            border-color: #388E3C;
+        }
+        h2 { color: #333; }
     </style>
 </head>
 <body>
     <h1>CJ's Life in Weeks</h1>
-    <p>Born: April 30, 1991</p>
-    <div class="grid" id="timeline-grid">
-        </div>
+    <p>Target: 100 Years</p>
+    
+    <div class="grid" id="timeline-grid"></div>
+
+    <script>
+        const birthday = new Date('1991-04-30');
+        const today = new Date();
+        const totalYears = 100;
+        const totalWeeks = totalYears * 52;
+        
+        // Calculate weeks lived
+        const diffInMs = today - birthday;
+        const weeksLived = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 7));
+
+        const grid = document.getElementById('timeline-grid');
+
+        for (let i = 0; i < totalWeeks; i++) {
+            const weekDiv = document.createElement('div');
+            weekDiv.className = 'week';
+            
+            // If the current box is less than weeks lived, color it green
+            if (i < weeksLived) {
+                weekDiv.classList.add('lived');
+            }
+            
+            grid.appendChild(weekDiv);
+        }
+    </script>
 </body>
 </html>
